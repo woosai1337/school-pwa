@@ -1,4 +1,4 @@
-const CACHE = 'school-v5';
+const CACHE = 'school-v6';
 const ASSETS = [
     './',
     './index.html',
