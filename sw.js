@@ -1,4 +1,4 @@
-const CACHE = 'school-v4';
+const CACHE = 'school-v2';
 const ASSETS = [
     './',
     './index.html',
