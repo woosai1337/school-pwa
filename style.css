@@ -1,0 +1,137 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f4f6fa;
+    color: #1a1a1a;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.topbar {
+    background: #4F81BD;
+    color: #fff;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding-top: calc(16px + env(safe-area-inset-top));
+}
+
+.topbar h1 { font-size: 18px; font-weight: 600; }
+
+.menu-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.menu {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 56px;
+    z-index: 9;
+}
+
+.menu a {
+    display: block;
+    padding: 14px 20px;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+}
+
+.menu a:active { background: #f0f4fa; }
+
+.hidden { display: none; }
+
+#content { padding: 16px; }
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.card h2 { font-size: 16px; margin-bottom: 8px; }
+
+.day-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+}
+
+.day-nav button {
+    flex: 1;
+    min-width: 48px;
+    padding: 10px 6px;
+    border: none;
+    border-radius: 8px;
+    background: #fff;
+    color: #4F81BD;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.day-nav button.active {
+    background: #4F81BD;
+    color: #fff;
+}
+
+.lesson {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.lesson:last-child { border-bottom: none; }
+
+.lesson-num {
+    width: 32px;
+    font-weight: 700;
+    color: #4F81BD;
+    flex-shrink: 0;
+}
+
+.lesson-body { flex: 1; }
+
+.lesson-subject { font-weight: 500; }
+
+.lesson-cabinet { color: #888; font-size: 13px; margin-top: 2px; }
+
+.substitution {
+    color: #c0392b;
+    font-weight: 500;
+}
+
+.substitution s { color: #999; font-weight: 400; }
+
+.empty {
+    text-align: center;
+    color: #888;
+    padding: 40px 0;
+    font-size: 14px;
+}
+
+.offline {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #c0392b;
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+}
