@@ -1,16 +1,49 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #f4f6fa;
-    color: #1a1a1a;
-    padding-bottom: env(safe-area-inset-bottom);
+:root {
+    --bg: #f4f6fa;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #888;
+    --primary: #4F81BD;
+    --primary-dark: #3d6a9e;
+    --border: #eee;
+    --danger: #c0392b;
+    --danger-bg: #fdecec;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f1115;
+        --card: #1a1d23;
+        --text: #e8eaed;
+        --text-muted: #9aa0a6;
+        --primary: #6fa3e0;
+        --primary-dark: #4F81BD;
+        --border: #2a2d34;
+        --danger: #ff6b6b;
+        --danger-bg: #2a1a1a;
+        --shadow: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+    }
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: background 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* === ШАПКА === */
 .topbar {
-    background: #4F81BD;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: #fff;
-    padding: 16px;
+    padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -18,51 +51,79 @@ body {
     top: 0;
     z-index: 10;
     padding-top: calc(16px + env(safe-area-inset-top));
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.topbar h1 { font-size: 18px; font-weight: 600; }
+.topbar h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.2px; }
 
 .menu-btn {
-    background: transparent;
+    background: rgba(255,255,255,0.15);
     border: none;
     color: #fff;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
 }
 
+.menu-btn:active { background: rgba(255,255,255,0.3); }
+
+/* === МЕНЮ === */
 .menu {
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: var(--card);
+    box-shadow: var(--shadow-lg);
     position: sticky;
-    top: 56px;
+    top: 68px;
     z-index: 9;
+    overflow: hidden;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from { max-height: 0; opacity: 0; }
+    to   { max-height: 500px; opacity: 1; }
 }
 
 .menu a {
     display: block;
-    padding: 14px 20px;
-    color: #1a1a1a;
+    padding: 15px 22px;
+    color: var(--text);
     text-decoration: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border);
     font-size: 15px;
+    transition: background 0.15s;
 }
 
-.menu a:active { background: #f0f4fa; }
+.menu a:last-child { border-bottom: none; }
+.menu a:active { background: var(--bg); }
 
 .hidden { display: none; }
 
 #content { padding: 16px; }
 
+/* === КАРТОЧКИ === */
 .card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px;
     margin-bottom: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    box-shadow: var(--shadow);
+    transition: background 0.3s;
 }
 
-.card h2 { font-size: 16px; margin-bottom: 8px; }
+.card h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+}
 
+/* === ДНИ НЕДЕЛИ === */
 .day-nav {
     display: flex;
     gap: 6px;
@@ -73,65 +134,110 @@ body {
 .day-nav button {
     flex: 1;
     min-width: 48px;
-    padding: 10px 6px;
+    padding: 12px 6px;
     border: none;
-    border-radius: 8px;
-    background: #fff;
-    color: #4F81BD;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--primary);
     font-weight: 600;
     cursor: pointer;
     font-size: 13px;
+    box-shadow: var(--shadow);
+    transition: all 0.2s;
 }
+
+.day-nav button:active { transform: scale(0.95); }
 
 .day-nav button.active {
-    background: #4F81BD;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: #fff;
+    box-shadow: 0 4px 12px rgba(79,129,189,0.3);
 }
 
+/* === УРОКИ === */
 .lesson {
     display: flex;
-    gap: 12px;
+    gap: 14px;
     padding: 12px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border);
 }
 
 .lesson:last-child { border-bottom: none; }
 
 .lesson-num {
     width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border-radius: 8px;
     font-weight: 700;
-    color: #4F81BD;
+    color: var(--primary);
     flex-shrink: 0;
+    font-size: 14px;
 }
 
-.lesson-body { flex: 1; }
+.lesson-body { flex: 1; padding-top: 4px; }
 
-.lesson-subject { font-weight: 500; }
+.lesson-subject { font-weight: 500; font-size: 15px; }
 
-.lesson-cabinet { color: #888; font-size: 13px; margin-top: 2px; }
+.lesson-cabinet {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 3px;
+}
 
 .substitution {
-    color: #c0392b;
+    color: var(--danger);
     font-weight: 500;
 }
 
-.substitution s { color: #999; font-weight: 400; }
+.substitution s {
+    color: var(--text-muted);
+    font-weight: 400;
+    opacity: 0.7;
+}
 
+/* === ПУСТЫЕ ЭКРАНЫ === */
 .empty {
     text-align: center;
-    color: #888;
+    color: var(--text-muted);
     padding: 40px 0;
     font-size: 14px;
 }
 
+/* === ОФЛАЙН === */
 .offline {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #c0392b;
+    background: var(--danger);
     color: #fff;
     text-align: center;
-    padding: 8px;
+    padding: 10px;
     font-size: 13px;
+    font-weight: 500;
+    z-index: 100;
+}
+
+/* === КНОПКИ === */
+button {
+    font-family: inherit;
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+button:active { opacity: 0.85; transform: scale(0.98); }
+
+input {
+    font-family: inherit;
+    background: var(--card);
+    color: var(--text);
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary) !important;
 }
