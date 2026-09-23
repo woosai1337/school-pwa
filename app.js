@@ -162,6 +162,11 @@ async function renderSchedule() {
                 `<button class="${d === currentDay ? 'active' : ''}" data-day="${d}">${DAYS[d]}</button>`
             ).join("")}
         </div>
+        <button id="weekBtn"
+            style="width:100%;margin-bottom:12px;padding:12px;background:#fff;color:#4F81BD;
+            border:1px solid #4F81BD;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
+            📆 Вся неделя
+        </button>
         <div id="schedule-body"><div class="card empty">Загрузка…</div></div>
     `;
 
@@ -171,6 +176,8 @@ async function renderSchedule() {
             renderSchedule();
         };
     });
+
+    document.getElementById("weekBtn").onclick = () => renderWeekSchedule();
 
     const body = document.getElementById("schedule-body");
 
@@ -219,6 +226,94 @@ async function renderSchedule() {
                 </div>`;
             }).join("")}
         </div>`;
+    } catch (e) {
+        body.innerHTML = `<div class="card empty">Ошибка: ${e.message}</div>`;
+    }
+}
+
+// === РАСПИСАНИЕ НА ВСЮ НЕДЕЛЮ ===
+async function renderWeekSchedule() {
+    const user = getUser();
+    if (!user) return renderLogin();
+
+    const content = document.getElementById("content");
+    document.getElementById("title").textContent = "Расписание на неделю";
+
+    content.innerHTML = `
+        <button id="backBtn"
+            style="width:100%;margin-bottom:12px;padding:12px;background:#fff;color:#4F81BD;
+            border:1px solid #4F81BD;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
+            ⬅️ На день
+        </button>
+        <div id="week-body"><div class="card empty">Загрузка…</div></div>
+    `;
+
+    document.getElementById("backBtn").onclick = () => {
+        document.getElementById("title").textContent = "Расписание";
+        renderSchedule();
+    };
+
+    const body = document.getElementById("week-body");
+
+    try {
+        const [week, subs] = await Promise.all([
+            api(`/api/schedule/week?class=${encodeURIComponent(user.class)}`),
+            api(`/api/substitutions?class=${encodeURIComponent(user.class)}`),
+        ]);
+
+        const weekData = week.week || {};
+        const subsToday = subs.substitutions || [];
+
+        const subByDay = {};
+        subsToday.forEach(s => {
+            if (!subByDay[s.day]) subByDay[s.day] = {};
+            subByDay[s.day][s.lesson] = s;
+        });
+
+        let html = "";
+        let hasAny = false;
+
+        for (const day of [1, 2, 3, 4, 5]) {
+            const lessons = weekData[day] || [];
+            if (!lessons.length) continue;
+
+            hasAny = true;
+            html += `<div class="card" style="margin-bottom:12px;">
+                <h2>${DAYS_FULL[day]}</h2>
+                ${lessons.map((l) => {
+                    const sub = (subByDay[day] || {})[l.lesson];
+                    if (sub) {
+                        const subjPart = sub.old_subject !== sub.new_subject
+                            ? `<s>${sub.old_subject || l.subject}</s> → <b>${sub.new_subject || l.subject}</b>`
+                            : `<b>${sub.new_subject || l.subject}</b>`;
+                        const cabPart = sub.old_cabinet !== sub.new_cabinet
+                            ? `🚪 <s>${sub.old_cabinet || l.cabinet || '—'}</s> → <b>${sub.new_cabinet || l.cabinet || '—'}</b>`
+                            : (sub.new_cabinet || l.cabinet ? `🚪 ${sub.new_cabinet || l.cabinet}` : "");
+                        return `<div class="lesson">
+                            <div class="lesson-num">${l.lesson}</div>
+                            <div class="lesson-body">
+                                <div class="lesson-subject substitution">⚠️ ${subjPart}</div>
+                                <div class="lesson-cabinet">${cabPart}</div>
+                            </div>
+                        </div>`;
+                    }
+                    return `<div class="lesson">
+                        <div class="lesson-num">${l.lesson}</div>
+                        <div class="lesson-body">
+                            <div class="lesson-subject">${l.subject}</div>
+                            <div class="lesson-cabinet">${l.cabinet ? '🚪 ' + l.cabinet : ''}</div>
+                        </div>
+                    </div>`;
+                }).join("")}
+            </div>`;
+        }
+
+        if (!hasAny) {
+            body.innerHTML = `<div class="card empty">На неделю расписания нет</div>`;
+            return;
+        }
+
+        body.innerHTML = html;
     } catch (e) {
         body.innerHTML = `<div class="card empty">Ошибка: ${e.message}</div>`;
     }
