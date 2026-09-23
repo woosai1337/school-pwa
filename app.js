@@ -78,45 +78,31 @@ function renderLogin() {
         <div class="card">
             <h2>👋 Добро пожаловать!</h2>
             <p style="color:#666;margin:8px 0 16px;">
-                Войди любым удобным способом:
+                Введи свой Telegram @username,<br>
+                который ты указывал при регистрации в боте.
             </p>
-
-            <div style="font-weight:600;margin-bottom:8px;">Способ 1 — по @username</div>
-            <input id="loginUsername" type="text" placeholder="@username"
+            <input id="loginInput" type="text" placeholder="@username"
                 style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:15px;">
-            <button id="loginBtnTg"
-                style="width:100%;margin-top:8px;padding:14px;background:#4F81BD;color:#fff;
+            <button id="loginBtn"
+                style="width:100%;margin-top:12px;padding:14px;background:#4F81BD;color:#fff;
                 border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">
-                Войти по username
+                Войти
             </button>
-
-            <div style="text-align:center;color:#999;margin:16px 0;">или</div>
-
-            <div style="font-weight:600;margin-bottom:8px;">Способ 2 — по ID</div>
-            <p style="color:#666;font-size:13px;margin:0 0 8px;">
-                Нет username? В боте напиши <code>/myid</code> или нажми «🆔 Мой ID для входа» — покажет число.
-            </p>
-            <input id="loginId" type="text" placeholder="Например: 801844727" inputmode="numeric"
-                style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:15px;">
-            <button id="loginBtnId"
-                style="width:100%;margin-top:8px;padding:14px;background:#f4f6fa;color:#4F81BD;
-                border:1px solid #4F81BD;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">
-                Войти по ID
-            </button>
-
             <div id="loginError" style="color:#c0392b;margin-top:12px;font-size:14px;"></div>
         </div>
     `;
 
-    const errEl = document.getElementById("loginError");
+    document.getElementById("loginBtn").onclick = async () => {
+        const username = document.getElementById("loginInput").value.trim();
+        const errEl = document.getElementById("loginError");
 
-    document.getElementById("loginBtnTg").onclick = async () => {
-        const username = document.getElementById("loginUsername").value.trim();
         if (!username) {
             errEl.textContent = "Введи username";
             return;
         }
+
         errEl.textContent = "Проверяю…";
+
         try {
             const user = await api("/api/me?username=" + encodeURIComponent(username));
             saveUser(user);
@@ -126,30 +112,10 @@ function renderLogin() {
         }
     };
 
-    document.getElementById("loginBtnId").onclick = async () => {
-        const userId = document.getElementById("loginId").value.trim();
-        if (!userId) {
-            errEl.textContent = "Введи ID";
-            return;
-        }
-        errEl.textContent = "Проверяю…";
-        try {
-            const user = await api("/api/me-by-id?user_id=" + encodeURIComponent(userId));
-            saveUser(user);
-            navigate("schedule");
-        } catch (e) {
-            errEl.textContent = e.message || "Не найден";
-        }
-    };
-
-    document.getElementById("loginUsername").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") document.getElementById("loginBtnTg").click();
-    });
-    document.getElementById("loginId").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") document.getElementById("loginBtnId").click();
+    document.getElementById("loginInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") document.getElementById("loginBtn").click();
     });
 }
-
 
 // === РАСПИСАНИЕ ===
 async function renderSchedule() {
